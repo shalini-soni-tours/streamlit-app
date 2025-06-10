@@ -2,3 +2,10 @@ streamlit
 pandas
 numpy
 matplotlib
+Python
+
+Streamlit
+
+Unsplash (for images)
+
+GitHub Codespaces
