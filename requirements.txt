@@ -1,7 +1,1 @@
 streamlit
-pandas
-numpy
-matplotlib
-Python
-Streamlit
-GitHub Codespaces
