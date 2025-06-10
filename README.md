@@ -1,34 +1,50 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+# 🏛️ Padharo Maahre Desh - Tour & Travel Website
 
-# Title
-st.title("Tour Website by Shalini")
+Welcome to **Padharo Maahre Desh**, a Streamlit-powered web application for discovering and booking curated tour packages across India!
 
-# Introduction
-st.write("Welcome to my interactive tour website built with Streamlit!")
+## 🚀 Features
 
-# Example: Displaying data
-df = pd.DataFrame({
-    'Location': ['Delhi', 'Agra', 'Jaipur', 'Mumbai'],
-    'Visitors': [12000, 8500, 9400, 11000]
-})
+- **Beautiful Homepage:** Eye-catching design with featured packages and quick stats.
+- **Tour Packages:** Browse a variety of themed packages with details, highlights, and temple visits.
+- **Booking System:** Easy-to-use booking forms with instant confirmation and booking history.
+- **Contact Page:** Office info and a contact form for inquiries.
+- **Session State:** Bookings and selections are preserved during your session.
 
-st.write("### Tour Statistics")
-st.dataframe(df)
+## 🛠️ Tech Stack
 
-# Example: Simple Plot
-st.write("### Visitor Trends")
-fig, ax = plt.subplots()
-ax.bar(df['Location'], df['Visitors'], color='skyblue')
-st.pyplot(fig)
+- [Streamlit](https://streamlit.io/) for the web UI
+- Python 3.11 (see `.devcontainer/devcontainer.json` for environment)
+- No database required—session state is used for demo purposes
 
-# User Input Example
-name = st.text_input("Enter your name:")
-if name:
-    st.write(f"Hello, {name}! Hope you enjoy exploring the tours.")
+## 🏃‍♂️ How to Run
 
-# Footer
-st.write("---")
-st.write("Powered by Streamlit | Created by Shalini")
+1. **Open in VS Code Dev Container** (recommended for instant setup).
+2. The app will auto-start on port 8501.
+3. Or, run manually:
+
+   ```sh
+   pip3 install streamlit
+   streamlit run tour_website.py
+   ```
+
+4. Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+## 📁 Files
+
+- `tour_website.py` — Main Streamlit app with all features.
+- `tour_website_final.py` — (Unused/placeholder) Ignore or use `tour_website.py` instead.
+- `.devcontainer/` — Dev container setup for VS Code.
+- `README.md` — Project documentation.
+
+## ✨ Screenshots
+
+![Homepage Example](https://images.unsplash.com/photo-1583241800651-eadf67e8f843?auto=format&fit=crop&w=800&q=80)
+
+## 📞 Contact
+
+- **Email:** info@padharomaahredesh.com
+- **Phone:** +91-9876543210
+
+---
+
+*Made with ❤️ using Streamlit*
