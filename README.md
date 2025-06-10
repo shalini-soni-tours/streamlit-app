@@ -1,50 +1,142 @@
-# 🏛️ Padharo Maahre Desh - Tour & Travel Website
+# --- HOMEPAGE ---
+def show_home():
+    st.markdown("<h1 style='color:#ff6b35;'>🏛️ Padharo Maahre Desh</h1>", unsafe_allow_html=True)
+    st.subheader("🌏 Explore India like never before!")
+    st.markdown("## 🎞️ Featured Tour Packages")
+    cols = st.columns(4)
+    for idx, (pkg, img) in enumerate(package_images.items()):
+        with cols[idx % 4]:
+            st.image(img, caption=pkg, use_container_width=True)
+            st.markdown(f"**{pkg}**")
+            st.markdown(f"💰 {packages[pkg]['price']} | ⏳ {packages[pkg]['duration']}")
+            if st.button("📖 View Details", key=f"slider_book_{pkg}"):
+                st.session_state.selected_package = pkg
+                st.session_state.selected_tab = "📦 Tour Packages"
+                st.rerun()
 
-Welcome to **Padharo Maahre Desh**, a Streamlit-powered web application for discovering and booking curated tour packages across India!
+# --- PACKAGE LIST PAGE ---
+def show_packages():
+    st.title("📦 Tour Packages")
+    for pkg, data in packages.items():
+        st.subheader(pkg)
+        st.image(package_images[pkg], use_container_width=True)
+        st.markdown(f"**Price:** {data['price']} | **Duration:** {data['duration']}")
+        st.markdown(f"**Destinations:** {', '.join(data['destinations'])}")
+        st.markdown("**Highlights:**")
+        for h in data['highlights']:
+            st.markdown(f"- {h}")
+        st.markdown("**Temples:**")
+        for t in data['temples']:
+            st.markdown(f"- {t}")
+        if st.button(f"📝 Book {pkg}", key=f"bookbtn_{pkg}"):
+            st.session_state.selected_package = pkg
+            show_package_details(pkg)
+            return
+        st.markdown("---")
 
-## 🚀 Features
+# --- PACKAGE DETAIL PAGE ---
+def show_package_details(pkg_name):
+    data = packages[pkg_name]
+    st.header(f"📦 {pkg_name}")
+    st.image(package_images[pkg_name], use_container_width=True)
+    st.markdown(f"**Price:** {data['price']} | **Duration:** {data['duration']}")
+    st.markdown(f"**Destinations:** {', '.join(data['destinations'])}")
+    st.markdown("**Highlights:**")
+    for h in data['highlights']:
+        st.markdown(f"- {h}")
+    st.markdown("**Temples Included:**")
+    for t in data['temples']:
+        st.markdown(f"- {t}")
+    if st.button("🚀 Proceed to Booking", key=f"bookform_{pkg_name}"):
+        show_booking_form(pkg_name)
 
-- **Beautiful Homepage:** Eye-catching design with featured packages and quick stats.
-- **Tour Packages:** Browse a variety of themed packages with details, highlights, and temple visits.
-- **Booking System:** Easy-to-use booking forms with instant confirmation and booking history.
-- **Contact Page:** Office info and a contact form for inquiries.
-- **Session State:** Bookings and selections are preserved during your session.
+# --- BOOKING FORM ---
+def show_booking_form(pkg_name):
+    data = packages[pkg_name]
+    st.subheader(f"📝 Book: {pkg_name}")
+    with st.form("booking_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            name = st.text_input("Full Name*")
+            email = st.text_input("Email*")
+            phone = st.text_input("Phone*")
+        with col2:
+            date = st.date_input("Travel Date", min_value=datetime.today())
+            people = st.number_input("Number of Travelers", 1, 20, 2)
+            note = st.text_area("Special Requests (Optional)")
+        base = int(data["price"].replace("₹", "").replace(",", ""))
+        total = base * people
+        st.markdown(f"### 💰 Estimated Total: ₹{total:,}")
+        confirm = st.form_submit_button("✅ Confirm Booking")
+        if confirm and name and email and phone:
+            booking = {
+                "package": pkg_name,
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "people": people,
+                "date": date,
+                "note": note,
+                "total": total,
+                "id": f"PMD{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            }
+            st.session_state.bookings.append(booking)
+            st.success(f"✅ Booking Confirmed! ID: {booking['id']}")
+            st.balloons()
+        elif confirm:
+            st.error("Please fill all required fields.")
 
-## 🛠️ Tech Stack
+# --- BOOKINGS PAGE ---
+def show_bookings():
+    st.title("📅 My Bookings")
+    if not st.session_state.bookings:
+        st.info("No bookings yet.")
+        return
+    for b in st.session_state.bookings:
+        with st.expander(f"{b['id']} - {b['package']}"):
+            st.markdown(f"- **Name:** {b['name']}")
+            st.markdown(f"- **Email:** {b['email']}")
+            st.markdown(f"- **Phone:** {b['phone']}")
+            st.markdown(f"- **Travel Date:** {b['date']}")
+            st.markdown(f"- **Travelers:** {b['people']}")
+            st.markdown(f"- **Total:** ₹{b['total']:,}")
+            if b['note']:
+                st.markdown(f"- **Special Requests:** {b['note']}")
 
-- [Streamlit](https://streamlit.io/) for the web UI
-- Python 3.11 (see `.devcontainer/devcontainer.json` for environment)
-- No database required—session state is used for demo purposes
+# --- CONTACT US PAGE ---
+def show_contact():
+    st.title("📞 Contact Us")
+    st.markdown("""
+📍 **Address**: Heritage Plaza, Jaipur  
+📧 **Email**: info@padharomaahredesh.com  
+📞 **Phone**: +91-9876543210  
+🕒 **Timings**: 9:00 AM – 7:00 PM (Mon–Sat)
+    """)
+    with st.form("contact_form"):
+        name = st.text_input("Your Name")
+        email = st.text_input("Your Email")
+        msg = st.text_area("Message")
+        submit = st.form_submit_button("Send")
+        if submit:
+            if name and email and msg:
+                st.success("✅ Message sent successfully.")
+            else:
+                st.error("Please fill all fields.")
 
-## 🏃‍♂️ How to Run
+# --- ROUTER ---
+tabs = ["🏠 Home", "📦 Tour Packages", "📅 My Bookings", "📞 Contact Us"]
+selected = st.sidebar.selectbox("Choose a section:", tabs, index=tabs.index(st.session_state.selected_tab))
+st.session_state.selected_tab = selected
 
-1. **Open in VS Code Dev Container** (recommended for instant setup).
-2. The app will auto-start on port 8501.
-3. Or, run manually:
-
-   ```sh
-   pip3 install streamlit
-   streamlit run tour_website.py
-   ```
-
-4. Open [http://localhost:8501](http://localhost:8501) in your browser.
-
-## 📁 Files
-
-- `tour_website.py` — Main Streamlit app with all features.
-- `tour_website_final.py` — (Unused/placeholder) Ignore or use `tour_website.py` instead.
-- `.devcontainer/` — Dev container setup for VS Code.
-- `README.md` — Project documentation.
-
-## ✨ Screenshots
-
-![Homepage Example](https://images.unsplash.com/photo-1583241800651-eadf67e8f843?auto=format&fit=crop&w=800&q=80)
-
-## 📞 Contact
-
-- **Email:** info@padharomaahredesh.com
-- **Phone:** +91-9876543210
-
----
-
-*Made with ❤️ using Streamlit*
+if selected == "🏠 Home":
+    show_home()
+elif selected == "📦 Tour Packages":
+    if st.session_state.selected_package:
+        show_package_details(st.session_state.selected_package)
+        st.session_state.selected_package = None
+    else:
+        show_packages()
+elif selected == "📅 My Bookings":
+    show_bookings()
+elif selected == "📞 Contact Us":
+    show_contact()
