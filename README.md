@@ -25,3 +25,5 @@ _(Replace with your Streamlit Cloud URL)_
 git clone https://github.com/your-username/streamlit-app.git
 cd streamlit-app
 streamlit run tour_website_final.py
+Made with ❤️ by Shalini,prerna,rishab
+📧 info@padharomaahredesh.com
